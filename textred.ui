@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1300</width>
+    <height>950</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Times New Roman</family>
+    <pointsize>8</pointsize>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-51</y>
+      <width>1121</width>
+      <height>661</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>13</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>                          Эта программа создана для построения оптимального маршрута между кабинетами здания Лицея №7.
+
+Здесь есть 4 основные кнопки, 9 вспомогательных, изменяющие части интерфейса, 2 дополнительные
+(добавляющие и убирающие дополнительные функции программы):
+
+Основные:
+Стрелка вверх - переход на этаж выше(если кнопка перестает быть активной/нажимаемой, значит это самый высокий этаж в здании).
+Возможно изменение цвета кнопки. Горячая клавиша - &quot;w&quot;.
+Стрелка вниз - переход на этаж ниже(если кнопка перестает быть активной/нажимаемой, значит это самый низкий этаж в здании).
+Возможно изменение цвета кнопки. Горячая клавиша - &quot;s&quot;.
+Кнопка &quot;Проложить маршрут&quot; - прокладывает маршрут между двумя выбранными точками.
+Возможно изменение цвета кнопки. Горячая клавиша - &quot;g&quot;.
+Кнопка &quot;План эвакуации&quot; - отображает план эвакуации. В данном режиме выбор точки начала,
+выбор точки конца и построение маршрута невозможно. Возможно изменение цвета кнопки. Горячая клавиша - &quot;h&quot;.
+
+Вспомогательные:
+7 представлены в нижнем ряду окна, не включая две последние кнопки. Меняют цвета кнопок и линии маршрута.
+2 оставшиеся находятся в правом верхнем углу между кнопкой «Проложить маршрут» и «План эвакуации»
+«Перейти на этаж точки начала» - перемещает пользователя на этаж точки начала маршрута.
+«Сделать план в черно-белом формате» - изменяет план на черно-белый(то же касается и плана эвакуации).
+Если кнопка была нажата один раз, то и в обычном режиме, и в режиме плана эвакуации план будет черно белым,
+если же нажать повторно, то все вернется в обычный режим.</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1300</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
