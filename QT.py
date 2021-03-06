@@ -5,7 +5,8 @@ import xlrd
 from math import sqrt
 import sqlite3
 from PyQt5.QtWidgets import QTableWidgetItem, QPushButton, \
-    QLabel, QApplication, QMainWindow, QComboBox, QColorDialog, QCheckBox
+    QLabel, QApplication, QMainWindow, QComboBox, QColorDialog, \
+    QCheckBox, QInputDialog
 from PyQt5 import uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QEvent  # библиотеки
@@ -20,6 +21,7 @@ class MyWidget(QMainWindow):
         self.fl, self.fl1 = True, True
         self.flWhBl = False
         self.inf = 10 ** 10
+        self.deletePoints = []
         self.dic = {
             0: ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8',
                 '0.9', '0.10', '0.11', 'Лифт 0', 'Кладовая',
@@ -75,7 +77,9 @@ class MyWidget(QMainWindow):
                              'Лифт 4',
                              ]
         self.spisNumElev = []
+        self.allNums = []
         self.mainScreen()
+        self.clearAllFocus()
 
     def inputIn(self):  # считываем из различных файлов нужную информацию
         b = xlrd.open_workbook("data.xls")  # ЭКСЕЛЬ?!
@@ -132,6 +136,14 @@ class MyWidget(QMainWindow):
                                     '4 этажПланЭвакуацииЧБ.png']
         #     Наколдовали основных строк, словарей и констант
 
+        self.allNums.extend([self.name_num[i] for i in self.spisNameStairs])
+        self.allNums.extend([self.name_num[i] for i in self.spisNameEscal])
+        self.allNums.extend([self.name_num[i] for i in self.spisNameElev])
+        self.allNums.extend([self.name_num[i] for i in ['Лестница 0.3', 'Лестница 0.4',
+                                                        'Лестница 0.3.5', 'Лестница 1.3',
+                                                        'Лестница 1.4']])
+        self.clearAllFocus()
+
     def mainScreen(self):  # кнопочки :>
         self.inputIn()
         self.resize(950, 580)
@@ -158,6 +170,14 @@ class MyWidget(QMainWindow):
         self.lower.resize(50, 50)
         self.lower.clicked.connect(self.lift)
         self.lower.installEventFilter(self)
+        self.dell = QPushButton('D', self)
+        self.dell.move(0, 150)
+        self.dell.resize(50, 50)
+        self.dell.clicked.connect(self.deleteP)
+        self.recc = QPushButton('R', self)
+        self.recc.move(0, 200)
+        self.recc.resize(50, 50)
+        self.recc.clicked.connect(self.recoverP)
         self.escape = QPushButton('План эвакуации', self)
         self.escape.move(850, 0)
         self.escape.resize(100, 50)
@@ -235,6 +255,7 @@ class MyWidget(QMainWindow):
         self.elevators.stateChanged.connect(self.widthoutElev)
         # self.elevators.setDisabled(True)
         self.go.click()
+        self.clearAllFocus()
 
     def withoutStairs(self):
         if self.stairs.isChecked():
@@ -242,6 +263,7 @@ class MyWidget(QMainWindow):
         else:
             self.spisNumStairs = [self.name_num[i] for i in self.spisNameStairs]
         self.go.click()
+        self.clearAllFocus()
 
     def withoutEscal(self):
         if self.escalators.isChecked():
@@ -249,6 +271,7 @@ class MyWidget(QMainWindow):
         else:
             self.spisNumEscal = [self.name_num[i] for i in self.spisNameEscal]
         self.go.click()
+        self.clearAllFocus()
 
     def widthoutElev(self):
         if self.elevators.isChecked():
@@ -256,6 +279,7 @@ class MyWidget(QMainWindow):
         else:
             self.spisNumElev = [self.name_num[i] for i in self.spisNameElev]
         self.go.click()
+        self.clearAllFocus()
 
     def blackWhite(self):  # работа с переходом из цветного в чб
         if self.flWhBl:
@@ -282,6 +306,7 @@ class MyWidget(QMainWindow):
             self.dataIm, self.plansOfescape = \
                 self.plansOfescape[:], self.dataIm[:]
             self.image.setPixmap(QPixmap(self.dataIm[self.where]))
+        self.clearAllFocus()
 
     def hideAll(self):  # прячем все)
         self.changeLv.hide()
@@ -301,6 +326,7 @@ class MyWidget(QMainWindow):
         self.colLine.hide()
         self.image.hide()
         self.info.hide()
+        self.clearAllFocus()
 
     def showAll(self):  # показываем все
         self.changeLv.show()
@@ -320,6 +346,7 @@ class MyWidget(QMainWindow):
         self.colLine.show()
         self.image.show()
         self.info.show()
+        self.clearAllFocus()
 
     def infoAbout(self):  # работа с кнопкой информации
         if self.fl1:
@@ -343,6 +370,7 @@ class MyWidget(QMainWindow):
                 self.lower.show()
                 self.image.show()
                 self.escape.show()
+        self.clearAllFocus()
 
     def getCol(self):  # работа с диалоговым окном для выбора цвета
         color = QColorDialog.getColor()
@@ -368,6 +396,7 @@ class MyWidget(QMainWindow):
             elif self.sender().text() == self.colLine.text():
                 self.color = color.name()
                 self.go.click()
+        self.clearAllFocus()
 
     def alg_Dijkstra(self):  # алгоритм дейкстры
         if self.numSt == self.numFin:
@@ -387,7 +416,8 @@ class MyWidget(QMainWindow):
                 for j in range(n):
                     if ((i not in self.spisNumStairs and j not in self.spisNumStairs) and
                         (i not in self.spisNumEscal and j not in self.spisNumEscal) and
-                        (i not in self.spisNumElev and j not in self.spisNumElev)) and \
+                        (i not in self.spisNumElev and j not in self.spisNumElev) and
+                        (i not in self.deletePoints and j not in self.deletePoints)) and \
                             dist[i] + self.weight[i][j] < dist[j]:
                         dist[j] = dist[i] + self.weight[i][j]
                         prev[j] = i
@@ -400,20 +430,30 @@ class MyWidget(QMainWindow):
                 self.path.append(self.numFin)
                 self.numFin = prev[self.numFin]
             self.path = self.path[::-1]
+        self.clearAllFocus()
 
     def drawWay(self, lv):  # работа с изображением, рисовка линии маршрута
         im = Image.open(self.dataImOrig[lv])
         drawer = ImageDraw.Draw(im)
         z = 5
+        z *= 2
+        for i in self.deletePoints:
+            x, y = self.coords[i]
+            drawer.line((x - z, y - z, x + z, y + z), fill=self.color, width=5)
+            drawer.line((x - z, y + z, x + z, y - z), fill=self.color, width=5)
+        z //= 2
+        spis = [-1, 0]
         for i in range(len(self.mass)):
             x, y = self.coords[self.mass[i]]
             drawer.ellipse(((int(x - z), int(y - z)),
                             (int(x + z), int(y + z))),
                            self.color)
-            if i != len(self.mass) - 1:
+            if i != len(self.mass) - 1 and self.weight[self.mass[i]][self.mass[i + 1]] != self.inf:
                 x1, y1 = self.coords[self.mass[i + 1]]
                 drawer.line((x, y, x1, y1), fill=self.color, width=5)
-        for i in range(-1, 1):
+            if i != len(self.mass) - 1 and self.mass[i] in self.allNums:
+                spis.append(i)
+        for i in spis:
             x, y = self.coords[self.mass[i]]
             z += 5
             drawer.ellipse(((int(x - z), int(y - z)),
@@ -428,6 +468,14 @@ class MyWidget(QMainWindow):
                             (int(x + z), int(y + z))),
                            self.color)
         im.save(self.dataIm[lv], "PNG")
+        self.clearAllFocus()
+
+    def eventFilter(self, obj, event):  # не дает фокусироваться на
+        # комбобоксах, чтобы все горячие клавиши работали
+        if event.type() == QEvent.FocusIn:
+            if obj == self.start or obj == self.finish:
+                self.clearFocus()
+        return super(MyWidget, self).eventFilter(obj, event)
 
     def do(self):  # объединение всех функций для построения пути
         self.numSt, self.numFin = 0, 0
@@ -448,36 +496,50 @@ class MyWidget(QMainWindow):
             im = Image.open(self.dataImOrig[i])
             im.save(self.dataIm[i], "PNG")
         self.image.setPixmap(QPixmap(self.dataIm[self.where]))
+        self.clearAllFocus()
 
     def level(self):  # поиск уровня точки наяала и перенос на данный уровень
         for j in self.dic.keys():
             if self.num_name[self.numSt] in self.dic[j]:
                 self.where = j
                 self.lift()
+                self.clearAllFocus()
                 break
+        self.clearAllFocus()
 
     def keyPressEvent(self, event):  # горячие клавиши
         if event.key() == Qt.Key_W:
             self.higher.click()
-        elif event.key() == Qt.Key_S:
+        if event.key() == Qt.Key_S:
             self.lower.click()
-        elif event.key() == Qt.Key_H:
+        if event.key() == Qt.Key_H:
             self.escape.click()
-        elif event.key() == Qt.Key_G:
+        if event.key() == Qt.Key_G:
             self.go.click()
-        elif event.key() == Qt.Key_I:
+        if event.key() == Qt.Key_I:
             self.info.click()
-        elif event.key() == Qt.Key_B:
+        if event.key() == Qt.Key_B:
             self.blaWhi.click()
+        self.clearAllFocus()
 
-    def eventFilter(self, obj, event):  # не дает фокусироваться на
-        # комбобоксах, чтобы все горячие клавиши работали
-        if event.type() == QEvent.FocusIn:
-            if obj == self.start:
-                self.higher.setFocus()
-            elif obj == self.finish:
-                self.lower.setFocus()
-        return super(MyWidget, self).eventFilter(obj, event)
+    def deleteP(self):
+        try:
+            name, ok_pressed = QInputDialog.getText(self, "Введите название точки, которую нужно удалить",
+                                                    "Введите название точки, которую нужно удалить")
+            if self.name_num[name] not in self.deletePoints:
+                self.deletePoints.append(self.name_num[name])
+        except KeyError:
+            self.deleteP()
+        self.go.click()
+
+    def recoverP(self):
+        try:
+            name, ok_pressed = QInputDialog.getText(self, "Введите название точки, которую нужно восстановить",
+                                                    "Введите название точки, которую нужно восстановить")
+            del self.deletePoints[self.deletePoints.index(self.name_num[name])]
+        except KeyError:
+            self.recoverP()
+        self.go.click()
 
     def lift(self):
         if self.sender().text() == self.higher.text():
@@ -492,6 +554,7 @@ class MyWidget(QMainWindow):
             self.higher.setDisabled(False)
             self.lower.setDisabled(False)
         self.image.setPixmap(QPixmap(self.dataIm[self.where]))
+        self.clearAllFocus()
 
     def run(self):  # работа с режимом плана эвакуации
         if self.fl:
@@ -512,6 +575,10 @@ class MyWidget(QMainWindow):
         self.dataIm, self.plansOfescape = \
             self.plansOfescape[:], self.dataIm[:]
         self.image.setPixmap(QPixmap(self.dataIm[self.where]))
+        self.clearAllFocus()
+
+    def clearAllFocus(self):
+        self.clearFocus()
 
 
 def except_hook(cls, exception, traceback):  # луч света в этом
