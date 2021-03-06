@@ -22,39 +22,59 @@ class MyWidget(QMainWindow):
         self.inf = 10 ** 10
         self.dic = {
             0: ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8',
-                '0.9', '0.10', '0.11', 'Столовая(кладовая)', 'Кладовая',
+                '0.9', '0.10', '0.11', 'Лифт 0', 'Кладовая',
                 '41 каб.', '42 каб.', '43 каб.', 'Лестница 0.3',
-                'Лестница 0.4', 'Лестница 0.3.5', 'Лестница 4.1',
-                'Лестница 4.2', 'Лестница 0.2', 'Лестница 0.1',
+                'Лестница 0.4', 'Лестница 0.3.5', 'Эскалатор 0', 'Лестница 0.1',
                 'Раздевалка для девочек', 'Раздевалка для мальчиков',
                 'Раздевалка для начальной школы', 'Столовая(кухня)',
                 'Столовая', 'Слоловая2', 'Щитовая'],
             1: ['Выход 1', 'Выход 2', '1.1', '1.2', '1.3', '1.4', '1.5',
                 '1.6', '1.7', '1.8', '1.9', '1.10', 'Туалеты', 'Лестница 1.1',
-                'Лестница 1.2', 'Лестница 1.3', 'Лестница 1.4', 'Мед. Кабинет',
-                'Библиотека', '9 каб.', '8 каб.', '6 каб.', '5 каб.', '4 каб.',
+                'Эскалатор 1', 'Лестница 1.3', 'Лестница 1.4', 'Мед. Кабинет',
+                'Библиотека', '9 каб.', '8 каб.', '6 каб.', '5 каб.', 'Лифт 1',
                 '3 каб.', 'Кухня', 'Кабинет директора', 'Приемная'],
-            2: ['Лестница 2.1', 'Лестница 2.2', '2.1', '2.2', '2.3',
+            2: ['Лестница 2.1', 'Эскалатор 2', '2.1', '2.2', '2.3',
                 '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '2.10', '2.11',
                 'Лаборанская биологии',
                 'Кабинет заместителя директора по УВР. Начальная школа',
-                '12 каб.', '13 каб.', '14 каб.', '15 каб.', '16 каб.',
+                '12 каб.', 'Лифт 2', '14 каб.', '15 каб.', '16 каб.',
                 '17 каб.', '18 каб.', '19 каб.',
                 'Кабинет заместителя директора по УВР', 'Учительская',
                 'Туалет для мальчиков', '12.2'],
             3: ['3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
-                '3.10', '3.11', '21.2', '21 каб.', '22 каб.', '23 каб.',
+                '3.10', '3.11', '21.2', '21 каб.', 'Лифт 3', '23 каб.',
                 '24 каб.', '25 каб.', '26 каб.', '27 каб.', '28 каб.',
                 '29 каб.', '30 каб.', 'Лаборанская физики', 'Лестница 3.1',
-                'Лестница 3.2', 'Кабинет заместителя директора',
+                'Эскалатор 3', 'Кабинет заместителя директора',
                 'Лаборанская географии', 'Туалет для девочек'],
             4: ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', 'Актовый зал',
                 'А.З. 1', 'А.З. 2', 'Спортивный зал', 'С.З.1', 'Лестница 4.1',
-                'Лестница 4.2', 'С.З.2', 'С.З.3', '31 каб.', '32 каб.',
+                'Эскалатор 4', 'С.З.2', 'С.З.3', '31 каб.', 'Лифт 4',
                 '33 каб.', '34 каб.', 'Лаборанская химии',
                 'Методический кабинет', 'Лаборанская',
                 'Раздевалка для мальчиков (Физ-ра)',
                 'Раздевалка для девочек (Физ-ра)', '31.2']}
+        self.spisNameStairs = ['Лестница 0.1',
+                               'Лестница 1.1',
+                               'Лестница 2.1',
+                               'Лестница 3.1',
+                               'Лестница 4.1'
+                               ]
+        self.spisNumStairs = []
+        self.spisNameEscal = ['Эскалатор 0',
+                              'Эскалатор 1',
+                              'Эскалатор 2',
+                              'Эскалатор 3',
+                              'Эскалатор 4',
+                              ]
+        self.spisNumEscal = []
+        self.spisNameElev = ['Лифт 0',
+                             'Лифт 1',
+                             'Лифт 2',
+                             'Лифт 3',
+                             'Лифт 4',
+                             ]
+        self.spisNumElev = []
         self.mainScreen()
 
     def inputIn(self):  # считываем из различных файлов нужную информацию
@@ -196,19 +216,45 @@ class MyWidget(QMainWindow):
         self.changeLv.resize(100, 50)
         self.changeLv.move(650, 0)
         self.changeLv.clicked.connect(self.level)
-        self.ch1 = QCheckBox('Построение маршрута с лестницами', self)
-        self.ch1.move(40, 550)
-        self.ch1.resize(316, 30)
-        self.ch1.click()
-        self.ch1.setDisabled(True)
-        self.ch2 = QCheckBox('Построение маршрута с эскалаторами', self)
-        self.ch2.move(356, 550)
-        self.ch2.resize(316, 30)
-        self.ch2.setDisabled(True)
-        self.ch3 = QCheckBox('Построение маршрута с лифтами', self)
-        self.ch3.move(672, 550)
-        self.ch3.resize(316, 30)
-        self.ch3.setDisabled(True)
+        self.stairs = QCheckBox('Построение маршрута с лестницами', self)
+        self.stairs.move(40, 550)
+        self.stairs.resize(316, 30)
+        self.stairs.click()
+        self.stairs.stateChanged.connect(self.withoutStairs)
+        # self.stairs.setDisabled(True)
+        self.escalators = QCheckBox('Построение маршрута с эскалаторами', self)
+        self.escalators.move(356, 550)
+        self.escalators.resize(316, 30)
+        self.escalators.click()
+        self.escalators.stateChanged.connect(self.withoutEscal)
+        # self.escalators.setDisabled(True)
+        self.elevators = QCheckBox('Построение маршрута с лифтами', self)
+        self.elevators.move(672, 550)
+        self.elevators.resize(316, 30)
+        self.elevators.click()
+        self.elevators.stateChanged.connect(self.widthoutElev)
+        # self.elevators.setDisabled(True)
+        self.go.click()
+
+    def withoutStairs(self):
+        if self.stairs.isChecked():
+            self.spisNumStairs = []
+        else:
+            self.spisNumStairs = [self.name_num[i] for i in self.spisNameStairs]
+        self.go.click()
+
+    def withoutEscal(self):
+        if self.escalators.isChecked():
+            self.spisNameEscal = []
+        else:
+            self.spisNumEscal = [self.name_num[i] for i in self.spisNameEscal]
+        self.go.click()
+
+    def widthoutElev(self):
+        if self.elevators.isChecked():
+            self.spisNameElev = []
+        else:
+            self.spisNumElev = [self.name_num[i] for i in self.spisNameElev]
         self.go.click()
 
     def blackWhite(self):  # работа с переходом из цветного в чб
@@ -339,7 +385,10 @@ class MyWidget(QMainWindow):
                 i = min_vertex
                 used[i] = True
                 for j in range(n):
-                    if dist[i] + self.weight[i][j] < dist[j]:
+                    if ((i not in self.spisNumStairs and j not in self.spisNumStairs) and
+                        (i not in self.spisNumEscal and j not in self.spisNumEscal) and
+                        (i not in self.spisNumElev and j not in self.spisNumElev)) and \
+                            dist[i] + self.weight[i][j] < dist[j]:
                         dist[j] = dist[i] + self.weight[i][j]
                         prev[j] = i
                 for j in range(n):
