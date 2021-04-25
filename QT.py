@@ -241,6 +241,7 @@ class MyWidget(QMainWindow):
         self.stairs.resize(316, 30)
         self.stairs.click()
         self.stairs.stateChanged.connect(self.withoutStairs)
+
         # self.stairs.setDisabled(True)
         self.escalators = QCheckBox('Построение маршрута с эскалаторами', self)
         self.escalators.move(356, 550)
@@ -355,7 +356,13 @@ class MyWidget(QMainWindow):
             self.label.show()
             self.escape.setDisabled(True)
             self.fl1 = False
+            self.escalators.setDisabled(True)
+            self.stairs.setDisabled(True)
+            self.elevators.setDisabled(True)
         else:
+            self.escalators.setDisabled(False)
+            self.stairs.setDisabled(False)
+            self.elevators.setDisabled(False)
             self.label.hide()
             self.escape.setDisabled(False)
             self.fl1 = True
@@ -438,9 +445,10 @@ class MyWidget(QMainWindow):
         z = 5
         z *= 2
         for i in self.deletePoints:
-            x, y = self.coords[i]
-            drawer.line((x - z, y - z, x + z, y + z), fill=self.color, width=5)
-            drawer.line((x - z, y + z, x + z, y - z), fill=self.color, width=5)
+            if self.num_name[i] in self.dic[lv]:
+                x, y = self.coords[i]
+                drawer.line((x - z, y - z, x + z, y + z), fill=self.color, width=5)
+                drawer.line((x - z, y + z, x + z, y - z), fill=self.color, width=5)
         z //= 2
         spis = [-1, 0]
         for i in range(len(self.mass)):
@@ -529,7 +537,7 @@ class MyWidget(QMainWindow):
             if self.name_num[name] not in self.deletePoints:
                 self.deletePoints.append(self.name_num[name])
         except KeyError:
-            self.deleteP()
+            pass
         self.go.click()
 
     def recoverP(self):
@@ -538,7 +546,7 @@ class MyWidget(QMainWindow):
                                                     "Введите название точки, которую нужно восстановить")
             del self.deletePoints[self.deletePoints.index(self.name_num[name])]
         except KeyError:
-            self.recoverP()
+            pass
         self.go.click()
 
     def lift(self):
@@ -568,10 +576,16 @@ class MyWidget(QMainWindow):
             self.lower.show()
             self.image.show()
             self.escape.show()
+            self.escalators.setDisabled(True)
+            self.stairs.setDisabled(True)
+            self.elevators.setDisabled(True)
             self.fl = False
         else:
             self.showAll()
             self.fl = True
+            self.escalators.setDisabled(False)
+            self.stairs.setDisabled(False)
+            self.elevators.setDisabled(False)
         self.dataIm, self.plansOfescape = \
             self.plansOfescape[:], self.dataIm[:]
         self.image.setPixmap(QPixmap(self.dataIm[self.where]))
