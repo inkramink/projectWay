@@ -327,6 +327,8 @@ class MyWidget(QMainWindow):
         self.colLine.hide()
         self.image.hide()
         self.info.hide()
+        self.dell.hide()
+        self.recc.hide()
         self.clearAllFocus()
 
     def showAll(self):  # показываем все
@@ -347,6 +349,8 @@ class MyWidget(QMainWindow):
         self.colLine.show()
         self.image.show()
         self.info.show()
+        self.dell.show()
+        self.recc.show()
         self.clearAllFocus()
 
     def infoAbout(self):  # работа с кнопкой информации
